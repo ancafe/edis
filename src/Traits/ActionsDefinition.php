@@ -268,10 +268,11 @@ trait ActionsDefinition
      * @throws Exception
      */
     public function get_meas_interval(
-        CUPS $cups,
+        CUPS|string              $cups,
         DateTimeImmutable|string $startDate,
         DateTimeImmutable|string $endDate
-    ): array|string {
+    ): array|string
+    {
         if (is_string($startDate)) {
             $startDate = DateTimeImmutable::createFromFormat("d/m/Y", $startDate);
         }
@@ -280,13 +281,18 @@ trait ActionsDefinition
             $endDate = DateTimeImmutable::createFromFormat("d/m/Y", $endDate);
         }
 
+        if ($cups instanceof CUPS) {
+            $cups = $cups->getId();
+        }
+
         return $this->run_action_command(
             new Actions\GetMeasInterval([
                 "startDate" => $startDate->format("Y-m-d"),
                 "endDate" => $endDate->format("Y-m-d"),
                 "type" => 4,
-                "contId" => $cups->getId()
+                "contId" => $cups
             ])
         );
     }
+
 }
